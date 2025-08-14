@@ -1,0 +1,18 @@
+# 🌐 Bloquear acceso directo a archivos sensibles
+<FilesMatch "(conexion\.php|intentos\.log)$">
+    Require all denied
+</FilesMatch>
+
+# 🔒 Bloquear acceso a carpetas sensibles usando RewriteRule
+RewriteEngine On
+
+# Bloquear acceso directo a /config/
+RewriteRule ^config/ - [F,L]
+
+# Bloquear acceso directo a /php/auth/logs/
+RewriteRule ^php/auth/ - [F,L]
+
+# 🛡️ Opcional: proteger archivos de configuración comunes
+<FilesMatch "\.(env|ini|bak|sql)$">
+    Require all denied
+</FilesMatch>
