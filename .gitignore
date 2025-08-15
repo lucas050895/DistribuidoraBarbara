@@ -3,3 +3,6 @@ assets/img/*
 
 # NO IGNORAR LA IMAGEN 'DEFAULT'
 !assets/img/default.jpg
+
+# IGNORAR SCRIPT
+script_usuario.sql
