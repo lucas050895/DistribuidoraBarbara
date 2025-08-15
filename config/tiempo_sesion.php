@@ -1,0 +1,3 @@
+<?php
+    // TIEMPO DE SESION EN SEGUNDO
+    define('TIEMPO_SESION', 300);
