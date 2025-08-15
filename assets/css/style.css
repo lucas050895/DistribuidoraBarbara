@@ -1,88 +1,95 @@
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
-
-:root{
+:root {
     font-size: 14px;
 
-    --color-first: #74b95a;
-    --color-second: #C2C2C2;
-    --color-third: #000000;
-    --color-fourth: #FFFFFF;
-
+    --color-primary: #f2f2f5;      /* FONDO PRINCIPAL */
+    --color-secondary: #ffffff;    /* FONDO TABLA Y CARDS */
+    --color-accent: #2979ff;       /* BOTONES / LINKS */
+    --color-text: #1e1e1e;         /* TEXTO PRINCIPAL */
+    --color-muted: #5f5f5f;        /* TEXTO SECUNDARIO */
+    --color-border: #c5c5cb;       /* BORDES */
+    --color-error: #d32f2f;        /* MENSAJES DE ERROR */
+    --color-buscador: #272729;     /* FONDO DEL BUSCADOR */
 }
 
-
-body{
-    font-family: "Roboto";
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: var(--color-primary);
+    color: var(--color-text);
 }
 
 /*   ---   INDEX   ---  */
 
 /* CONTENEDOR DE PAGINA */
-main{
+main {
     width: 100%;
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-
-    background-color: var(--color-first);
 }
 
-main > h1{
+/* TÍTULO PRINCIPAL (H1) */
+main > h1 {
     width: 100%;
-    height: 35%;
+    margin: 40px auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     font-size: 5em;
-    font-family: 'Luckiest Guy';
+    font-family: 'Luckiest Guy', cursive;
     text-align: center;
     font-weight: 500;
-}
-main > h1 > span{
-    font-size: 1.5rem;
-    font-family: 'Roboto';
-    font-weight: 400;
+    color: var(--color-accent);
 }
 
-/* FORMULARIO DE SESION */
-main > form{
-    height: 65%;
-    padding: 50px;
+main > h1 > span {
+    font-size: 1.5rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    color: var(--color-muted);
+}
+
+/* FORMULARIO DE SESIÓN */
+main > form {
+    padding: 10em 50px;
     text-align: center;
 }
-/* TITULO DE FORMULARIO */
-main > form > fieldset{
+
+/* TÍTULO DE FORMULARIO */
+main > form > fieldset {
     padding: 30px;
     text-align: center;
     text-transform: uppercase;
-    border-radius: 5px;
-    color: white;
-    background-color: var(--color-second);
-    box-shadow: 0px 0px 12px 6px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 0px 12px 6px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 12px 6px rgba(0,0,0,0.75);
+    border-radius: 8px;
+    color: var(--color-text);
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    box-shadow: 0px 0px 12px 4px rgba(0,0,0,0.08);
 }
-main > form > fieldset > legend{
+
+main > form > fieldset > legend {
     width: 200px;
     height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: var(--color-accent);
+    color: white;
     padding: 0 .5em;
+    border-radius: 4px;
 }
 
 /* CONTENEDOR DE CADA INPUT Y LABEL */
-main > form > fieldset > div{
+main > form > fieldset > div {
     width: 100%;
     height: 50px;
     display: flex;
@@ -91,62 +98,92 @@ main > form > fieldset > div{
 }
 
 /* LABEL DE USUARIO Y CONTRASEÑA */
-main > form > fieldset > div > label{
+main > form > fieldset > div > label {
     margin: 0 10px;
-    font-size: 1.5em;
-    color: var(--color-third);
+    font-size: 1.2em;
+    color: var(--color-text);
 }
+
 /* INPUT DE USUARIO Y CONTRASEÑA */
-main > form > fieldset > div > input{
+main > form > fieldset > div > input {
     width: 100%;
     padding: 5px 10px;
-    border: none;
-    border: 1px solid var(--color-third);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    outline: none;
+    transition: border 0.3s;
 }
 
+main > form > fieldset > div > input:focus {
+    border-color: var(--color-accent);
+}
 
-/* INPUT ENTRAR */
-main > form > fieldset > input{
+/* BOTÓN ENTRAR */
+main > form > fieldset > input {
     width: 100px;
-    height: 30px;
+    height: 35px;
     border: none;
-    border: 1px solid var(--color-third);
-    border-radius: 10px;
-    transition: all .5s ease-in;
-}
-main > form > fieldset > input:hover{
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    color: var(--color-fourth);
-    background-color: var(--color-first);
+    transition: background 0.3s ease;
 }
 
+main > form > fieldset > input:hover {
+    background-color: #1a5ec8;
+}
 
+/* MENSAJES DE ERROR */
+main > form > .error-message {
+    max-width: 500px;
+    padding: 10px;
+    margin: 2em auto;
+    color: var(--color-error);
+    background-color: #fdecea;
+    font-weight: bold;
+    border-radius: 6px;
+    border: 1px solid var(--color-error);
+}
 
 /*   ---   DASHBOARD   ---   */
-.buscador{
+
+/* BUSCADOR */
+.buscador {
     width: 100%;
     max-width: 600px;
     height: 80px;
     margin: 2em auto;
     position: sticky;
     z-index: 2;
-    top: 0;
+    top: 20px;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    background: black;
+    background: var(--color-buscador);
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    /* BACKGROUND-COLOR: BLACK; */
 }
-.buscador > input{
+
+.buscador > input {
     width: 50%;
     height: 30px;
     padding: 0 5px;
-}
-.buscador > select{
-    height: 30px;
-    padding: 0 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
 }
 
-/*TABLA DE PRODUCTOS*/
+.buscador > select {
+    height: 30px;
+    padding: 0 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+/* TABLA DE PRODUCTOS */
 .tabla-productos {
     width: 100%;
     max-width: 500px;
@@ -154,18 +191,30 @@ main > form > fieldset > input:hover{
     margin: 0 auto;
     font-family: Arial, sans-serif;
     table-layout: fixed;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
 .tabla-productos th, 
 .tabla-productos td {
-    border: 1px solid var(--color-second);
+    border: 1px solid var(--color-border);
     padding: 8px;
     word-wrap: break-word;
 }
 
 .tabla-productos th {
-    background-color: var(--color-second);
+    background-color: #f8f8fa;
     font-weight: bold;
+    text-transform: uppercase;
+    text-align: center ;
+    color: var(--color-text);
+}
+
+/* FILAS ALTERNADAS */
+.tabla-productos tr:nth-child(even) td {
+    background-color: #f4f4f8;
 }
 
 .tabla-productos th:nth-child(1),
@@ -176,12 +225,14 @@ main > form > fieldset > input:hover{
 
 .tabla-productos th:nth-child(2),
 .tabla-productos td:nth-child(2) {
-    width: 60%; 
+    width: 55%; 
 }
 
 .tabla-productos th:nth-child(3),
 .tabla-productos td:nth-child(3) {
-    width: 20%;
+    max-width: 25%;
+}
+.tabla-productos td:nth-child(3) {
     text-align: right;
 }
 
@@ -192,8 +243,13 @@ main > form > fieldset > input:hover{
     margin: 0 auto;
 }
 
-.fila-rubro td {
-    background-color: #eaeaea;
+.rubro-titulo {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px;
+    margin: 1em auto;
     font-weight: bold;
     text-align: center;
+    background-color: var(--color-text);
+    color: var(--color-primary);
 }
