@@ -1,6 +1,6 @@
 # 📦 Distribuidora Barbara
 
-**Distribuidora Barbara** es un catálogo web desarrollado en **PHP** que permite visualizar productos con su precio y fotografía, obtenidos desde una base de datos **Microsoft SQL Server**.  
+**Distribuidora Barbara** es un catálogo web desarrollado en **PHP** que permite visualizar productos con su precio y foto, obtenidos desde una base de datos **Microsoft SQL Server**.  
 
 En esta plataforma, los visitantes pueden consultar el listado completo de productos de la distribuidora de forma ágil y ordenada.
 
