@@ -1,3 +1,5 @@
+<?php include_once("config/cache.php") ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +7,7 @@
     <?php include("php/pages/layout/meta.php"); ?>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="styles.css?v=<?php echo filemtime('styles.css'); ?>">
 
     <!-- ICONOS -->
     <?php include("php/pages/layout/iconos.php"); ?>
