@@ -6,7 +6,7 @@ En esta plataforma, los visitantes pueden consultar el listado completo de produ
 
 ---
 
-## 🛠 Funcionalidades actuales
+## 🛠 Funcionalidades
 
 - Visualización de productos con nombre, precio y foto asociada.
 - Carga dinámica de información desde una base de datos SQL Server mediante extensiones específicas de PHP.
