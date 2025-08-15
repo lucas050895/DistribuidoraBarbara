@@ -7,7 +7,7 @@
     <?php include("php/pages/layout/meta.php"); ?>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="styles.css?v=<?php echo filemtime('styles.css'); ?>">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime('assets/css/style.css'); ?>">
 
     <!-- ICONOS -->
     <?php include("php/pages/layout/iconos.php"); ?>

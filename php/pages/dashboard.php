@@ -66,11 +66,17 @@
     $imagenDefault = "default.jpg";
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- META -->
     <?php include("layout/meta.php"); ?>
-    <link rel="stylesheet" href="../../assets/css/styles.css?v=<?php echo filemtime('styles.css'); ?>">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css?v=<?php echo filemtime('../../assets/css/style.css'); ?>">
+
+    <!-- ICONOS -->
     <?php include("layout/iconos.php"); ?>
 </head>
 <body>
