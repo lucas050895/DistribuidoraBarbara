@@ -1,18 +1,15 @@
-# 🌐 Bloquear acceso directo a archivos sensibles
-<FilesMatch "(conexion\.php|intentos\.log)$">
-    Require all denied
-</FilesMatch>
-
-# 🔒 Bloquear acceso a carpetas sensibles usando RewriteRule
+# Activar mod_rewrite
 RewriteEngine On
 
-# Bloquear acceso directo a /config/
+# 1) Bloquear /config/
 RewriteRule ^config/ - [F,L]
 
-# Bloquear acceso directo a /php/auth/logs/
-RewriteRule ^php/auth/ - [F,L]
+# 2) Bloquear /php/pages/ excepto dashboard.php
+RewriteCond %{REQUEST_URI} !^/DistribuidoraBarbara/php/pages/dashboard\.php$ [NC]
+RewriteRule ^php/pages/ - [F,L]
 
-# 🛡️ Opcional: proteger archivos de configuración comunes
-<FilesMatch "\.(env|ini|bak|sql)$">
-    Require all denied
-</FilesMatch>
+# 3) Bloquear /php/pages/layout/
+RewriteRule ^php/pages/layout/ - [F,L]
+
+# 4) Bloquear /assets/js/
+RewriteRule ^assets/js/ - [F,L]
