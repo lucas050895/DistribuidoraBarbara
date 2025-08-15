@@ -123,3 +123,77 @@ main > form > fieldset > input:hover{
 
 
 /*   ---   DASHBOARD   ---   */
+.buscador{
+    width: 100%;
+    max-width: 600px;
+    height: 80px;
+    margin: 2em auto;
+    position: sticky;
+    z-index: 2;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background: black;
+}
+.buscador > input{
+    width: 50%;
+    height: 30px;
+    padding: 0 5px;
+}
+.buscador > select{
+    height: 30px;
+    padding: 0 5px;
+}
+
+/*TABLA DE PRODUCTOS*/
+.tabla-productos {
+    width: 100%;
+    max-width: 500px;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    table-layout: fixed;
+}
+
+.tabla-productos th, 
+.tabla-productos td {
+    border: 1px solid var(--color-second);
+    padding: 8px;
+    word-wrap: break-word;
+}
+
+.tabla-productos th {
+    background-color: var(--color-second);
+    font-weight: bold;
+}
+
+.tabla-productos th:nth-child(1),
+.tabla-productos td:nth-child(1) {
+    width: 20%;
+    text-align: center;
+}
+
+.tabla-productos th:nth-child(2),
+.tabla-productos td:nth-child(2) {
+    width: 60%; 
+}
+
+.tabla-productos th:nth-child(3),
+.tabla-productos td:nth-child(3) {
+    width: 20%;
+    text-align: right;
+}
+
+.tabla-productos img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.fila-rubro td {
+    background-color: #eaeaea;
+    font-weight: bold;
+    text-align: center;
+}
