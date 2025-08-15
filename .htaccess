@@ -13,3 +13,4 @@ RewriteRule ^php/pages/layout/ - [F,L]
 
 # 4) Bloquear /assets/js/
 RewriteRule ^assets/js/ - [F,L]
+

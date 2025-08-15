@@ -1,6 +1,5 @@
 # IGNROAR TODAS LAS IMAGENES
 assets/img/*
 
-
 # NO IGNORAR LA IMAGEN 'DEFAULT'
 !assets/img/default.jpg
