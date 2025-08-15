@@ -70,7 +70,7 @@
 <html lang="es">
 <head>
     <?php include("layout/meta.php"); ?>
-    <link rel="stylesheet" href="styles.css?v=<?php echo filemtime('styles.css'); ?>">
+    <link rel="stylesheet" href="../../assets/css/styles.css?v=<?php echo filemtime('styles.css'); ?>">
     <?php include("layout/iconos.php"); ?>
 </head>
 <body>
