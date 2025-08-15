@@ -1,3 +1,11 @@
+<?php
+    // Evita acceso directo por URL
+    if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
+        exit('Acceso denegado');
+    }
+?>
+
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Este sitio en una vista de articulos del local 'Distribuidora Bárbara'.">

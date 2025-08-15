@@ -1,3 +1,11 @@
+<?php
+    // Evita acceso directo por URL
+    if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
+        exit('Acceso denegado');
+    }
+?>
+
+
 <!-- FONTAWESOME  -->
 <script src="https://kit.fontawesome.com/439ee37b3b.js" crossorigin="anonymous"></script>
 
