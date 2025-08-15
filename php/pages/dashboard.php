@@ -1,89 +1,78 @@
 <?php
-    session_start();
-    require_once '../../config/cache.php';
-    require_once '../../config/conexion.php';
-    require_once '../../config/tiempo_sesion.php'; // constante de tiempo de sesión
+require_once '../auth/session_check.php';
+require_once '../../config/cache.php';
+require_once '../../config/conexion.php';
 
-    // Validar que el usuario esté logueado
-    if (!isset($_SESSION['idPersona']) || !isset($_SESSION['logged_in'])) {
-        header("Location: ../../index.php?error=3");
-        exit();
+// Escapar variables de sesión
+$idPersona = $_SESSION['idPersona'];
+$usuario   = htmlspecialchars($_SESSION['usuario'] ?? '', ENT_QUOTES, 'UTF-8');
+$nombre    = htmlspecialchars($_SESSION['nombre'] ?? '', ENT_QUOTES, 'UTF-8');
+$apellido  = htmlspecialchars($_SESSION['apellido'] ?? '', ENT_QUOTES, 'UTF-8');
+
+$productos = [];
+$nombreLista = '';
+
+try {
+    $sql = "SELECT 
+                i.nombre AS producto,
+                i.descripcion,
+                p.precio,
+                l.nombre AS nombreLista,
+                r.nombre AS rubro
+            FROM baseRol br
+            INNER JOIN invTipoListaPrecio l ON br.idListaPrecio = l.id
+            INNER JOIN invPrecioItem p ON l.id = p.idTipoListaPrecio
+            INNER JOIN invItem i ON i.id = p.idItem
+            INNER JOIN invRubro r ON i.idRubro = r.id
+            WHERE br.idPersona = :idPersona AND CAST(i.estado AS INT) = 1
+            ORDER BY r.nombre, i.nombre";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':idPersona', $idPersona, PDO::PARAM_STR);
+    $stmt->execute();
+    $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($productos as &$p) {
+        $p['producto']    = htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8');
+        $p['descripcion'] = htmlspecialchars($p['descripcion'], ENT_QUOTES, 'UTF-8');
+        $p['precio']      = htmlspecialchars($p['precio'], ENT_QUOTES, 'UTF-8');
+        $p['nombreLista'] = htmlspecialchars($p['nombreLista'], ENT_QUOTES, 'UTF-8');
+        $p['rubro']       = htmlspecialchars($p['rubro'], ENT_QUOTES, 'UTF-8');
     }
+    unset($p);
 
-    // Verificar si se pasó el tiempo de sesión
-    if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] > TIEMPO_SESION)) {
-        session_destroy();
-        header("Location: ../../index.php?error=2");
-        exit();
-    }
-
-    $idPersona = $_SESSION['idPersona'];
-    $usuario = $_SESSION['usuario'] ?? '';
-    $nombre = $_SESSION['nombre'] ?? '';
-    $apellido = $_SESSION['apellido'] ?? '';
-
+} catch (Exception $e) {
+    error_log("Error obteniendo productos: " . $e->getMessage());
     $productos = [];
-    $nombreLista = '';
+}
 
-    try {
-        $sql = "SELECT 
-                    i.nombre AS producto,
-                    i.descripcion,
-                    p.precio,
-                    l.nombre AS nombreLista,
-                    r.nombre AS rubro
-                FROM baseRol br
-                INNER JOIN invTipoListaPrecio l ON br.idListaPrecio = l.id
-                INNER JOIN invPrecioItem p ON l.id = p.idTipoListaPrecio
-                INNER JOIN invItem i ON i.id = p.idItem
-                INNER JOIN invRubro r ON i.idRubro = r.id
-                WHERE br.idPersona = :idPersona AND CAST(i.estado AS INT) = 1
-                ORDER BY r.nombre, i.nombre";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':idPersona', $idPersona, PDO::PARAM_STR);
-        $stmt->execute();
-        $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        error_log("Error obteniendo productos: " . $e->getMessage());
-        $productos = [];
+$rubros = [];
+foreach ($productos as $producto) {
+    $rubro = $producto['rubro'] ?? 'Sin rubro';
+    $rubros[$rubro][] = $producto;
+    if (empty($nombreLista) && !empty($producto['nombreLista'])) {
+        $nombreLista = $producto['nombreLista'];
     }
+}
 
-    $rubros = [];
+$rubroNombres = array_keys($rubros);
+$carpetaImagenes = "../../assets/img/";
+$imagenDefault = "default.jpg";
 
-    foreach ($productos as $producto) {
-        $rubro = $producto['rubro'] ?? 'Sin rubro';
-        $rubros[$rubro][] = $producto;
-        if (empty($nombreLista) && !empty($producto['nombreLista'])) {
-            $nombreLista = $producto['nombreLista'];
-        }
-    }
-
-    $rubroNombres = array_keys($rubros);
-
-    // Ruta imágenes
-    $carpetaImagenes = "../../assets/img/";
-    $imagenDefault = "default.jpg";
+require_once '../../config/tiempo_sesion.php';
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- META -->
     <?php include("layout/meta.php"); ?>
-
-    <!-- CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css?v=<?php echo filemtime('../../assets/css/style.css'); ?>">
-
-    <!-- ICONOS -->
     <?php include("layout/iconos.php"); ?>
 </head>
 <body>
 <main>
     <?php include("layout/titulo.php"); ?>
 
-    <h2><?php echo htmlspecialchars($nombreLista); ?></h2>
+    <h2><?php echo htmlspecialchars($nombreLista, ENT_QUOTES, 'UTF-8'); ?></h2>
 
     <?php if (!empty($productos)): ?>
         <div class="buscador">
@@ -91,16 +80,18 @@
             <select id="filtroRubro">
                 <option value="todos">TODOS LOS RUBROS</option>
                 <?php foreach ($rubroNombres as $rubro): ?>
-                    <option value="<?= htmlspecialchars($rubro) ?>"><?= htmlspecialchars($rubro) ?></option>
+                    <option value="<?= htmlspecialchars($rubro, ENT_QUOTES, 'UTF-8') ?>">
+                        <?= htmlspecialchars($rubro, ENT_QUOTES, 'UTF-8') ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>
 
         <?php foreach ($rubros as $rubroNombre => $productosRubro): ?>
-            <h3 class='rubro-titulo' data-rubro='<?= htmlspecialchars($rubroNombre) ?>'>
-                <?= htmlspecialchars($rubroNombre) ?>
+            <h3 class="rubro-titulo" data-rubro='<?= htmlspecialchars($rubroNombre, ENT_QUOTES, 'UTF-8') ?>'>
+                <?= htmlspecialchars($rubroNombre, ENT_QUOTES, 'UTF-8') ?>
             </h3>
-            <div class='grupo-rubro' data-rubro='<?= htmlspecialchars($rubroNombre) ?>'>
+            <div class='grupo-rubro' data-rubro='<?= htmlspecialchars($rubroNombre, ENT_QUOTES, 'UTF-8') ?>'>
                 <table class="tabla-productos">
                     <thead>
                         <th>Img</th>
@@ -116,9 +107,9 @@
                         }
                         ?>
                         <tr>
-                            <td><img src="<?= $rutaImagen ?>" alt="<?= htmlspecialchars($p['producto']) ?>" style="width:60px;height:auto;"></td>
-                            <td><?= htmlspecialchars($p['producto']) ?></td>
-                            <td>$<?= number_format($p['precio'], 2) ?></td>
+                            <td><img src="<?= $rutaImagen ?>" alt="<?= htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8') ?>" style="width:60px;height:auto;"></td>
+                            <td><?= htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8') ?></td>
+                            <td>$<?= number_format((float)$p['precio'], 2) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </table>
@@ -130,11 +121,22 @@
     <?php endif; ?>
 </main>
 
-<!-- CIERRE DE SESION AUTOMATICA -->
-<script src="../../assets/js/session_timeout.php"></script>
+<!-- JS de expiración sincronizado -->
+<script>
+    const TIEMPO_SESION = <?php echo TIEMPO_SESION; ?>;
+    let tiempoRestante = TIEMPO_SESION;
 
-<!-- FILTRADO DE TABLA -->
-<script src="../../assets/js/filtrado.js"></script>
+    const temporizador = setInterval(() => {
+        tiempoRestante--;
+        if (tiempoRestante <= 0) {
+            clearInterval(temporizador);
+            alert("Su sesión ha expirado.");
+            window.location.href = "../../index.php?error=2";
+        }
+    }, 1000);
+</script>
+
+<script src="../../assets/js/filtrado.js?v=3"></script>
 
 </body>
 </html>
