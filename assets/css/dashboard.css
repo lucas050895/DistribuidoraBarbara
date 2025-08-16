@@ -1,0 +1,153 @@
+@import url(style.css);
+
+
+/* TÍTULO PRINCIPAL (H1) */
+main > h1 {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-size: 5em;
+    font-family: 'Luckiest Guy', cursive;
+    text-align: center;
+    font-weight: 500;
+    color: var(--color-accent);
+}
+
+main > h1 > span {
+    font-size: 1.5rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    color: var(--color-muted);
+}
+
+
+/* LISTA */
+main > h2{
+    text-align: center;
+}
+
+/* BUSCADOR */
+.buscador {
+    width: 100%;
+    max-width: 600px;
+    height: 80px;
+    margin: 2em auto;
+    position: sticky;
+    z-index: 2;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background: var(--color-buscador);
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    /* BACKGROUND-COLOR: BLACK; */
+}
+
+.buscador > input {
+    width: 50%;
+    height: 30px;
+    padding: 0 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+.buscador > select {
+    height: 30px;
+    padding: 0 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+/* TABLA DE PRODUCTOS */
+.tabla-productos {
+    width: 100%;
+    max-width: 500px;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    table-layout: fixed;
+    background-color: var(--color-secondary);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.tabla-productos th, 
+.tabla-productos td {
+    border: 1px solid var(--color-border);
+    padding: 8px;
+    word-wrap: break-word;
+}
+
+.tabla-productos th {
+    background-color: #f8f8fa;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center ;
+    color: var(--color-text);
+}
+
+/* FILAS ALTERNADAS */
+.tabla-productos tr:nth-child(even) td {
+    background-color: #f4f4f8;
+}
+
+.tabla-productos th:nth-child(1),
+.tabla-productos td:nth-child(1) {
+    width: 20%;
+    text-align: center;
+}
+
+.tabla-productos th:nth-child(2),
+.tabla-productos td:nth-child(2) {
+    width: 55%; 
+}
+
+.tabla-productos th:nth-child(3),
+.tabla-productos td:nth-child(3) {
+    max-width: 25%;
+}
+.tabla-productos td:nth-child(3) {
+    text-align: right;
+}
+
+.tabla-productos img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.rubro-titulo {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px;
+    margin: 1em auto;
+    font-weight: bold;
+    text-align: center;
+    background-color: var(--color-text);
+    color: var(--color-primary);
+}
+
+
+
+/* FOOTER */
+main > footer{
+    width: 100%;
+    margin-top: 3em ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-text);
+    font-size: 1em;
+}
+main > footer *{
+    color: var(--color-primary);
+}
+main > footer > span{
+    font-size: .8em;
+}

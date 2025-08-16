@@ -34,10 +34,10 @@ try {
 
     foreach ($productos as &$p) {
         $p['producto']    = htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8');
-        $p['descripcion'] = htmlspecialchars($p['descripcion'], ENT_QUOTES, 'UTF-8');
-        $p['precio']      = htmlspecialchars($p['precio'], ENT_QUOTES, 'UTF-8');
-        $p['nombreLista'] = htmlspecialchars($p['nombreLista'], ENT_QUOTES, 'UTF-8');
-        $p['rubro']       = htmlspecialchars($p['rubro'], ENT_QUOTES, 'UTF-8');
+        $p['descripcion'] = htmlspecialchars($p['descripcion'] ?? '', ENT_QUOTES, 'UTF-8');
+        $p['precio']      = htmlspecialchars($p['precio'] ?? '', ENT_QUOTES, 'UTF-8');
+        $p['nombreLista'] = htmlspecialchars($p['nombreLista'] ?? '', ENT_QUOTES, 'UTF-8');
+        $p['rubro']       = htmlspecialchars($p['rubro'] ?? 'Sin rubro', ENT_QUOTES, 'UTF-8');
     }
     unset($p);
 
@@ -46,6 +46,7 @@ try {
     $productos = [];
 }
 
+// Agrupar por rubro y capturar nombre de lista
 $rubros = [];
 foreach ($productos as $producto) {
     $rubro = $producto['rubro'] ?? 'Sin rubro';
@@ -55,9 +56,61 @@ foreach ($productos as $producto) {
     }
 }
 
+// ---------- Config imágenes ----------
+$carpetaImagenesUrl = "../../assets/img/";         // para el navegador
+$carpetaImagenesFS  = __DIR__ . "/../../assets/img/"; // para file_exists / scandir
+$imagenDefault      = "default.jpg";
+
+// Normalizador: a snake_case sin tildes ni símbolos
+function normalizar_nombre($texto) {
+    $t = trim((string)$texto);
+
+    // Pasar a ASCII (quita tildes). Si iconv no está, se usa el original.
+    if (function_exists('iconv')) {
+        $conv = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $t);
+        if ($conv !== false) { $t = $conv; }
+    }
+
+    $t = mb_strtolower($t, 'UTF-8');
+    // Reemplazar cualquier cosa no alfanumérica por guión bajo
+    $t = preg_replace('/[^a-z0-9]+/u', '_', $t);
+    // Colapsar múltiples guiones bajos
+    $t = preg_replace('/_+/', '_', $t);
+    // Quitar guiones bajos al inicio/fin
+    $t = trim($t, '_');
+
+    return $t;
+}
+
+// Construir un índice de archivos existentes -> clave normalizada
+$extPermitidas = ['jpg','jpeg','png','webp','gif','JPG','JPEG','PNG','WEBP','GIF'];
+$indiceImagenes = []; // clave normalizada => nombre real del archivo (basename)
+
+if (is_dir($carpetaImagenesFS)) {
+    $archivos = scandir($carpetaImagenesFS);
+    if ($archivos !== false) {
+        foreach ($archivos as $f) {
+            if ($f === '.' || $f === '..') continue;
+            $path = $carpetaImagenesFS . $f;
+            if (!is_file($path)) continue;
+
+            $ext = pathinfo($f, PATHINFO_EXTENSION);
+            if (!in_array($ext, $extPermitidas, true)) continue;
+
+            $base = pathinfo($f, PATHINFO_FILENAME);
+            $clave = normalizar_nombre($base);
+            if ($clave === '') continue;
+
+            // Primer match gana (evita sobreescrituras).
+            if (!isset($indiceImagenes[$clave])) {
+                $indiceImagenes[$clave] = $f; // guardar basename con extensión original
+            }
+        }
+    }
+}
+
+// Extraer nombres de rubro ya luego de tener datos
 $rubroNombres = array_keys($rubros);
-$carpetaImagenes = "../../assets/img/";
-$imagenDefault = "default.jpg";
 
 require_once '../../config/tiempo_sesion.php';
 ?>
@@ -65,7 +118,7 @@ require_once '../../config/tiempo_sesion.php';
 <html lang="es">
 <head>
     <?php include("layout/meta.php"); ?>
-    <link rel="stylesheet" href="../../assets/css/style.css?v=<?php echo filemtime('../../assets/css/style.css'); ?>">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css?v=<?php echo filemtime('../../assets/css/dashboard.css'); ?>">
     <?php include("layout/iconos.php"); ?>
 </head>
 <body>
@@ -94,24 +147,46 @@ require_once '../../config/tiempo_sesion.php';
             <div class='grupo-rubro' data-rubro='<?= htmlspecialchars($rubroNombre, ENT_QUOTES, 'UTF-8') ?>'>
                 <table class="tabla-productos">
                     <thead>
-                        <th>Img</th>
-                        <th>Producto</th>
-                        <th>Precio</th>
+                        <tr>
+                            <th>Img</th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                        </tr>
                     </thead>
+                    <tbody>
                     <?php foreach ($productosRubro as $p): ?>
                         <?php
-                        $nombreArchivo = preg_replace('/[^a-z0-9]/i', '_', strtolower($p['producto'])) . ".jpg";
-                        $rutaImagen = $carpetaImagenes . $nombreArchivo;
-                        if (!file_exists($rutaImagen)) {
-                            $rutaImagen = $carpetaImagenes . $imagenDefault;
+                        // 1) Normalizar el nombre del producto
+                        $nombreProd   = $p['producto'];
+                        $clave        = normalizar_nombre($nombreProd);
+
+                        // 2) Preferencia: exacto .jpg
+                        $archivoPreferido = $clave . '.jpg';
+                        $rutaFSPreferida  = $carpetaImagenesFS . $archivoPreferido;
+
+                        if (is_file($rutaFSPreferida)) {
+                            $archivoElegido = $archivoPreferido; // existe exacto .jpg
+                        } elseif (isset($indiceImagenes[$clave])) {
+                            // 3) Si no existe el .jpg exacto, tomar cualquier archivo que coincida normalizado
+                            $archivoElegido = $indiceImagenes[$clave];
+                        } else {
+                            // 4) Fallback
+                            $archivoElegido = $imagenDefault;
                         }
+
+                        $rutaImagen = $carpetaImagenesUrl . $archivoElegido;
                         ?>
                         <tr>
-                            <td><img src="<?= $rutaImagen ?>" alt="<?= htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8') ?>" style="width:60px;height:auto;"></td>
+                            <td>
+                                <img src="<?= htmlspecialchars($rutaImagen, ENT_QUOTES, 'UTF-8') ?>"
+                                     alt="<?= htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8') ?>"
+                                     style="width:60px;height:auto;object-fit:contain;">
+                            </td>
                             <td><?= htmlspecialchars($p['producto'], ENT_QUOTES, 'UTF-8') ?></td>
                             <td>$<?= number_format((float)$p['precio'], 2) ?></td>
                         </tr>
                     <?php endforeach; ?>
+                    </tbody>
                 </table>
             </div>
         <?php endforeach; ?>
@@ -119,6 +194,9 @@ require_once '../../config/tiempo_sesion.php';
     <?php else: ?>
         <p>No hay productos disponibles para mostrar.</p>
     <?php endif; ?>
+
+
+    <?php include("layout/footer.php") ?>
 </main>
 
 <!-- JS de expiración sincronizado -->
