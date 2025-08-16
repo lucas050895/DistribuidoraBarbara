@@ -7,7 +7,7 @@
     <?php include("php/pages/layout/meta.php"); ?>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime('assets/css/style.css'); ?>">
+    <link rel="stylesheet" href="assets/css/index.css?v=<?php echo filemtime('assets/css/index.css'); ?>">
 
     <!-- ICONOS -->
     <?php include("php/pages/layout/iconos.php"); ?>
@@ -59,6 +59,8 @@
                     }
                 ?>
         </form>
+        
+        <?php include("php/pages/layout/footer.php") ?>
     </main>
 
 </body>
